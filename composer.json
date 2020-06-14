@@ -1,0 +1,13 @@
+{
+    "name": "doomy/ormtopus",
+    "autoload": {
+      "classmap": ["src/"]
+    },
+    "require": {
+		"php": ">= 5.6",
+		"dibi/dibi": "*",
+        "doomy/entitycache": ">= 1.0.0",
+        "doomy/repository": ">= 3.0.4"
+	},
+	"minimum-stability": "stable"
+}
