@@ -62,7 +62,6 @@ final class DashboardPresenter extends Nette\Application\UI\Presenter
 
     public function renderIndex()
     {
-        $clients = $this->data->findAll(Client::class);
         $this->template->clients = $this->data->findAll(Client::class);
     }
 }
