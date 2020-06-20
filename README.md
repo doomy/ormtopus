@@ -78,20 +78,20 @@ finds and returns **first** entity meeting the criteria in `$where`. Notes on ho
 #### findAll(string $entityClass, array|string $where = [])
 finds and returns array of all entities (if where is specified then all entities that meet the criteria) of given class. Notes on how to compose `$where ` array below.
 
-###Data manipulation methods
+### Data manipulation methods
 
 #### create(string $entityClass, array $values)
 creates an instance of given entity class from associative array of values in method argument. **This does not save the entity to the database**
 
 example:  `$clientEntity = $this->data->create(Client::class, ['NAME' => 'Microsoft', 'ADDRESS' => 'Tasmania']);`
 
-####deleteById(string $entityClass, int $id)
+#### deleteById(string $entityClass, int $id)
 deletes entity in database by id provided
 
-####delete(string $entityClass, array|string $where)
+#### delete(string $entityClass, array|string $where)
 deletes all entities meeting provided criteria in database. Notes on how to compose `$where ` array below.
 
-###Composing the where criteria
+### Composing the where criteria
 
 There are basically two criteria assembly styles.
 
