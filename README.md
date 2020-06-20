@@ -114,13 +114,18 @@ in general usage, multiple criteria will be considered to be joined by AND claus
 
 ##### LIKE expressition in assocative $where
 `$client = $this->data->findOne(Client::class, ['NAME' => '~Micros']);`
+
 will have the same result as:
+
 `$client = $this->data->findOne(Client::class, "NAME LIKE '%Mircros%'");`
+
 More complex LIKE criteria can be achieved using the single string $where criteria.
 
 ##### set criteria in assocative $where
 `$clients = $this->data->findAll(Client::class, ['ID' => [1, 2, 3]]);`
+
 equals to:
+
 `$clients = $this->data->findAll(Client::class, "WHERE id IN(1, 2, 3)");`
 
 
