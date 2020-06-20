@@ -1,7 +1,7 @@
 # Ormtopus
 simple ORM library working with Nette framework with entity caching for better performance.
 
-##Prerequisities
+## Prerequisities
 In order for orm to work, working dibi connection needs to be established first. In your local configuration file (`local.neon`), you should have your connection set up in similar fashion as below:
 
 ```
