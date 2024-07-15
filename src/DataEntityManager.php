@@ -1,30 +1,37 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Doomy\Ormtopus;
 
-use Doomy\Repository\RepoFactory;
 use Doomy\EntityCache\EntityCache;
+use Doomy\Repository\RepoFactory;
 
 class DataEntityManager
 {
     private $repoFactory;
+
     private $entityCache;
 
-    public function __construct(RepoFactory $repoFactory, EntityCache $entityCache) {
+    public function __construct(RepoFactory $repoFactory, EntityCache $entityCache)
+    {
         $this->repoFactory = $repoFactory;
         $this->entityCache = $entityCache;
     }
 
-    public function findOne($entityClass, $where, $orderBy = null) {
+    public function findOne($entityClass, $where, $orderBy = null)
+    {
         $repository = $this->repoFactory->getRepository($entityClass);
         return $repository->findOne($where, $orderBy);
     }
 
-    public function findAll($entityClass, $where = null, $orderBy = null, $limit = null) {
-        if (!$where && !$orderBy) {
+    public function findAll($entityClass, $where = null, $orderBy = null, $limit = null)
+    {
+        if (! $where && ! $orderBy) {
             $cached = $this->entityCache->getAll($entityClass);
-            if ($cached) return $cached;
+            if ($cached) {
+                return $cached;
+            }
         }
 
         $repository = $this->repoFactory->getRepository($entityClass);
@@ -33,15 +40,19 @@ class DataEntityManager
         return $entities;
     }
 
-    public function save($entityClass, $values) {
+    public function save($entityClass, $values)
+    {
         $repository = $this->repoFactory->getRepository($entityClass);
         $this->entityCache->flush($entityClass);
         return $repository->save($values);
     }
 
-    public function findById($entityClass, $id) {
+    public function findById($entityClass, $id)
+    {
         $cached = $this->entityCache->getById($entityClass, $id);
-        if ($cached) return $cached;
+        if ($cached) {
+            return $cached;
+        }
 
         $repository = $this->repoFactory->getRepository($entityClass);
         $entity = $repository->findById($id);
@@ -49,19 +60,22 @@ class DataEntityManager
         return $entity;
     }
 
-    public function deleteById($entityClass, $id) {
+    public function deleteById($entityClass, $id)
+    {
         $repository = $this->repoFactory->getRepository($entityClass);
         $this->entityCache->flushById($entityClass, $id);
         return $repository->deleteById($id);
     }
 
-    public function delete($entityClass, $where) {
+    public function delete($entityClass, $where)
+    {
         $repository = $this->repoFactory->getRepository($entityClass);
         $this->entityCache->flush($entityClass);
         $repository->delete($where);
     }
 
-    public function create($entityClass, $values) {
+    public function create($entityClass, $values)
+    {
         return new $entityClass($values, $this->repoFactory);
     }
 }

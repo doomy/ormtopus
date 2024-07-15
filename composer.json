@@ -9,5 +9,8 @@
         "doomy/entitycache": ">= 1.0.0",
         "doomy/repository": ">= 3.0.4"
 	},
-	"minimum-stability": "stable"
+	"minimum-stability": "stable",
+    "require-dev": {
+        "symplify/easy-coding-standard": "^12.3"
+    }
 }
