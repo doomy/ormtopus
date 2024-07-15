@@ -4,10 +4,10 @@
       "classmap": ["src/"]
     },
     "require": {
-		"php": ">= 5.6",
+		"php": "^8.3",
 		"dibi/dibi": "*",
         "doomy/entitycache": ">= 1.0.0",
-        "doomy/repository": ">= 3.0.4"
+        "doomy/repository": "^4.0.0"
 	},
 	"minimum-stability": "stable",
     "require-dev": {

@@ -115,6 +115,6 @@ final readonly class DataEntityManager
      */
     public function create(string $entityClass, array $values)
     {
-        return new $entityClass($values, $this->repoFactory);
+        return new $entityClass($values);
     }
 }
