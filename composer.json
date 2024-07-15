@@ -11,6 +11,7 @@
 	},
 	"minimum-stability": "stable",
     "require-dev": {
-        "symplify/easy-coding-standard": "^12.3"
+        "symplify/easy-coding-standard": "^12.3",
+        "phpstan/phpstan": "^1.11"
     }
 }

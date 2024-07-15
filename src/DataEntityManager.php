@@ -5,28 +5,41 @@ declare(strict_types=1);
 namespace Doomy\Ormtopus;
 
 use Doomy\EntityCache\EntityCache;
+use Doomy\Repository\Model\Entity;
 use Doomy\Repository\RepoFactory;
 
-class DataEntityManager
+final readonly class DataEntityManager
 {
-    private $repoFactory;
-
-    private $entityCache;
-
-    public function __construct(RepoFactory $repoFactory, EntityCache $entityCache)
-    {
-        $this->repoFactory = $repoFactory;
-        $this->entityCache = $entityCache;
+    public function __construct(
+        private RepoFactory $repoFactory,
+        private EntityCache $entityCache
+    ) {
     }
 
-    public function findOne($entityClass, $where, $orderBy = null)
+    /**
+     * @template T of Entity
+     * @param class-string<T> $entityClass
+     * @param mixed[]|string|null $where
+     * @return T|null
+     */
+    public function findOne(string $entityClass, array|string|null $where, ?string $orderBy = null): ?Entity
     {
         $repository = $this->repoFactory->getRepository($entityClass);
         return $repository->findOne($where, $orderBy);
     }
 
-    public function findAll($entityClass, $where = null, $orderBy = null, $limit = null)
-    {
+    /**
+     * @template T of Entity
+     * @param class-string<T> $entityClass
+     * @param mixed[]|string|null $where
+     * @return T[]
+     */
+    public function findAll(
+        string $entityClass,
+        array|string|null $where = null,
+        ?string $orderBy = null,
+        ?int $limit = null
+    ): array {
         if (! $where && ! $orderBy) {
             $cached = $this->entityCache->getAll($entityClass);
             if ($cached) {
@@ -40,14 +53,25 @@ class DataEntityManager
         return $entities;
     }
 
-    public function save($entityClass, $values)
+    /**
+     * @template T of Entity
+     * @param class-string<T> $entityClass
+     * @param mixed[] $values
+     * @return T
+     */
+    public function save(string $entityClass, array $values): Entity
     {
         $repository = $this->repoFactory->getRepository($entityClass);
         $this->entityCache->flush($entityClass);
         return $repository->save($values);
     }
 
-    public function findById($entityClass, $id)
+    /**
+     * @template T of Entity
+     * @param class-string<T> $entityClass
+     * @return T|null
+     */
+    public function findById(string $entityClass, int|string $id): ?Entity
     {
         $cached = $this->entityCache->getById($entityClass, $id);
         if ($cached) {
@@ -60,21 +84,36 @@ class DataEntityManager
         return $entity;
     }
 
-    public function deleteById($entityClass, $id)
+    /**
+     * @template T of Entity
+     * @param class-string<T> $entityClass
+     */
+    public function deleteById(string $entityClass, string|int $id): void
     {
         $repository = $this->repoFactory->getRepository($entityClass);
         $this->entityCache->flushById($entityClass, $id);
-        return $repository->deleteById($id);
+        $repository->deleteById($id);
     }
 
-    public function delete($entityClass, $where)
+    /**
+     * @template T of Entity
+     * @param mixed[]|string $where
+     * @param class-string<T> $entityClass
+     */
+    public function delete(string $entityClass, array|string $where): void
     {
         $repository = $this->repoFactory->getRepository($entityClass);
         $this->entityCache->flush($entityClass);
         $repository->delete($where);
     }
 
-    public function create($entityClass, $values)
+    /**
+     * @template T of Entity
+     * @param class-string<T> $entityClass
+     * @param mixed[] $values
+     * @return T
+     */
+    public function create(string $entityClass, array $values)
     {
         return new $entityClass($values, $this->repoFactory);
     }
