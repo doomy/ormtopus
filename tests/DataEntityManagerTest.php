@@ -2,7 +2,7 @@
 
 namespace Doomy\Ormtopus\Tests;
 use Dibi\Exception;
-use Doomy\CustomDibi\Connection;
+use Dibi\Connection;
 use Doomy\EntityCache\EntityCache;
 use Doomy\Ormtopus\DataEntityManager;
 use Doomy\Repository\EntityFactory;
