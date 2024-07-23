@@ -17,8 +17,7 @@ Then, in your global config file (`common.neon`/ `config.neon`) set up following
 
 ```neon
 services:
-	...
-	connection: Doomy\CustomDibi\Connection(%dibi%)
+	connection: Dibi\Connection(%dibi%)
 	entityFactory: Doomy\Repository\EntityFactory(@connection)
 	repoFactory: Doomy\Repository\RepoFactory(@connection, @entityFactory)
 	entityCache: Doomy\EntityCache\EntityCache
@@ -124,7 +123,7 @@ You can either use the whole condition, you would otherwise use in SQL statement
 #### $where as an associative array
 The criteria can also be specified as an associative array. See example:
 
-```
+```php
 $client = $this->data->findOne(
 	Client::class, 
 	['id' => 15, 'address' == 'New York']
