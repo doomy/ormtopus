@@ -56,10 +56,10 @@ final readonly class DataEntityManager
     /**
      * @template T of Entity
      * @param class-string<T> $entityClass
-     * @param mixed[] $values
+     * @param T $values
      * @return T
      */
-    public function save(string $entityClass, array $values): Entity
+    public function save(string $entityClass, Entity $values): Entity
     {
         $repository = $this->repoFactory->getRepository($entityClass);
         $this->entityCache->flush($entityClass);

@@ -1,20 +1,27 @@
 {
     "name": "doomy/ormtopus",
     "autoload": {
-      "classmap": ["src/"]
+        "classmap": ["src/"],
+        "psr-4": {
+            "Doomy\\Ormtopus\\\\Tests\\": "tests/"
+        }
     },
     "require": {
 		"php": "^8.3",
 		"dibi/dibi": "*",
         "doomy/entitycache": ">= 1.0.0",
-        "doomy/repository": "^4.0.0"
+        "doomy/repository": "^5.0.0"
 	},
 	"minimum-stability": "stable",
     "require-dev": {
         "symplify/easy-coding-standard": "^12.3",
-        "phpstan/phpstan": "^1.11"
+        "phpstan/phpstan": "^1.11",
+        "doomy/testing": "^1.0.2",
+        "phpunit/phpunit": "^11.2"
     },
     "scripts": {
-        "check": "php vendor/bin/phpstan analyse src --level=9 && vendor/bin/ecs --fix"
+        "check": "php vendor/bin/phpstan analyse src --level=9 && vendor/bin/ecs --fix && vendor/phpunit/phpunit/phpunit tests --bootstrap vendor/autoload.php --colors --stop-on-error --stop-on-failure",
+        "tests-up": "vendor/doomy/testing/bin/tests-up.sh",
+        "tests-down": "vendor/doomy/testing/bin/tests-down.sh"
     }
 }

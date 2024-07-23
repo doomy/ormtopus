@@ -4,7 +4,7 @@ simple ORM library working with Nette framework with entity caching for better p
 ## Prerequisities
 In order for orm to work, working dibi connection needs to be established first. In your local configuration file (`local.neon`), you should have your connection set up in similar fashion as below:
 
-```
+```neon
 parameters:
     dibi:
         host: localhost
@@ -15,7 +15,7 @@ parameters:
 
 Then, in your global config file (`common.neon`/ `config.neon`) set up following services:
 
-```
+```neon
 services:
 	...
 	connection: Doomy\CustomDibi\Connection(%dibi%)
@@ -28,28 +28,41 @@ services:
 ### Entity models
 
 for each entity you plan to be working with equivalent php entity model class has to be created manually. See the example below:
-```
+```php
 <?php
 
 namespace App\Client\Model;
 
 use Doomy\Repository\Model\Entity;
+use Doomy\Repository\TableDefinition\Attribute\Column\Identity;
+use Doomy\Repository\TableDefinition\Attribute\Column\PrimaryKey;
+use Doomy\Repository\TableDefinition\Attribute\Table;
 
+
+#[Table('test_table')]
 class Client extends Entity
 {
-    const TABLE = 't_client';
+    #[PrimaryKey]
+    #[Identity]
+    private ?int $id;
+    
+    public function __construct(?int $id = null) {
+        $this->id = $id;
+    }
 
-    public $NAME;
-	public $ADDRESS;
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 }
 ```
 
-all the accessible database fields need to be specified as public property with identifier in UPPERCASE (regardless of the case in the db schema).
+starting from version 3.0.0 there's no need to specify the columns or column properties in uppercase.
 
 ## Usage
 The orm is used by injecting `DataEntityManager` service into your presenters or wherever needed, see the example:
 
-```
+```php
 final class DashboardPresenter extends Nette\Application\UI\Presenter
 {
     private $data;
@@ -80,10 +93,18 @@ finds and returns array of all entities (if where is specified then all entities
 
 ### Data manipulation methods
 
-#### create(string $entityClass, array $values)
-creates an instance of given entity class from associative array of values in method argument. **This does not save the entity to the database**
 
-example:  `$clientEntity = $this->data->create(Client::class, ['NAME' => 'Microsoft', 'ADDRESS' => 'Tasmania']);`
+[DEPRECATED]
+#### ~~create(string $entityClass, array $values)~~
+~~creates an instance of given entity class from associative array of values in method argument.~~
+
+~~example:  `$clientEntity = $this->data->create(Client::class, ['name' => 'Microsoft', 'ADDRESS' => 'Tasmania']);`~~
+
+NOTE: the preferred way to create a new entity (since version 3.0.0) is now using it's  constructor:
+```php
+    $clientEntity = new Client(id: 123);
+```
+**This does not save the entity to the database**
 
 #### deleteById(string $entityClass, int $id)
 deletes entity in database by id provided
@@ -98,7 +119,7 @@ There are basically two criteria assembly styles.
 #### $where as a simple string value
 You can either use the whole condition, you would otherwise use in SQL statement as a single string:
 
-`$client = $this->data->findOne(Client::class, 'ID > 15 AND ADDRESS = 'New York')`
+`$client = $this->data->findOne(Client::class, 'id > 15 AND address = 'New York')`
 
 #### $where as an associative array
 The criteria can also be specified as an associative array. See example:
@@ -106,22 +127,22 @@ The criteria can also be specified as an associative array. See example:
 ```
 $client = $this->data->findOne(
 	Client::class, 
-	['ID' => 15, 'ADDRESS' == 'New York']
+	['id' => 15, 'address' == 'New York']
 )`
 ```
 in general usage, multiple criteria will be considered to be joined by AND clause. The associative example is therefore equivalent to the simple string criteria in the former example.
 
 ##### LIKE expressition in assocative $where
-`$client = $this->data->findOne(Client::class, ['NAME' => '~Micros']);`
+`$client = $this->data->findOne(Client::class, ['name' => '~Micros']);`
 
 will have the same result as:
 
-`$client = $this->data->findOne(Client::class, "NAME LIKE '%Mircros%'");`
+`$client = $this->data->findOne(Client::class, "name LIKE '%Mircros%'");`
 
 More complex LIKE criteria can be achieved using the single string $where criteria.
 
 ##### set criteria in assocative $where
-`$clients = $this->data->findAll(Client::class, ['ID' => [1, 2, 3]]);`
+`$clients = $this->data->findAll(Client::class, ['id' => [1, 2, 3]]);`
 
 equals to:
 
