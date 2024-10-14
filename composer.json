@@ -10,7 +10,7 @@
 		"php": "^8.3",
 		"dibi/dibi": "*",
         "doomy/entitycache": ">= 1.0.0",
-        "doomy/repository": "^7.0.0"
+        "doomy/repository": "^7.0.0|^8.0.0"
 	},
 	"minimum-stability": "stable",
     "require-dev": {
