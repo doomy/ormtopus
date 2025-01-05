@@ -117,4 +117,15 @@ final readonly class DataEntityManager
     {
         return new $entityClass($values);
     }
+
+    /**
+     * @template T of Entity
+     * @param class-string<T> $entityClass
+     * @param mixed[]|string|null $where
+     */
+    public function count(string $entityClass, array|string|null $where = null): int
+    {
+        $repository = $this->repoFactory->getRepository($entityClass);
+        return $repository->count($where);
+    }
 }

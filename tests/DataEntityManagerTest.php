@@ -51,6 +51,9 @@ final class DataEntityManagerTest extends TestCase
 
         $foundAll = $dataEntityManager->findAll(TestEntity::class);
         Assert::assertCount(3, $foundAll);
+        Assert::assertEquals(3, $dataEntityManager->count(TestEntity::class));
+        Assert::assertEquals(2, $dataEntityManager->count(TestEntity::class, 'intColumn = 1 OR intColumn = 2'));
+        Assert::assertEquals(0, $dataEntityManager->count(TestEntity::class, 'intColumn = 4'));
 
         $foundEntity1 = array_shift($foundAll);
         Assert::assertEquals(1, $foundEntity1->getIntColumn());
