@@ -49,7 +49,14 @@ final readonly class DataEntityManager
 
         $repository = $this->repoFactory->getRepository($entityClass);
         $entities = $repository->findAll($where, $orderBy, $limit);
-        $this->entityCache->cacheAll($entityClass, $entities);
+        if ($where === null) {
+            $this->entityCache->cacheAll($entityClass, $entities);
+        } else {
+            foreach ($entities as $entity) {
+                $this->entityCache->cacheById($entityClass, $repository->getEntityId($entity), $entity);
+            }
+        }
+
         return $entities;
     }
 
@@ -82,6 +89,36 @@ final readonly class DataEntityManager
         $entity = $repository->findById($id);
         $this->entityCache->cacheById($entityClass, $id, $entity);
         return $entity;
+    }
+
+    /**
+     * @template T of Entity
+     * @param class-string<T> $entityClass
+     * @param string[]|int[] $ids
+     * @return T[]
+     */
+    public function findByIds(string $entityClass, array $ids): array
+    {
+        $repository = $this->repoFactory->getRepository($entityClass);
+
+        $entitiesFromCache = [];
+
+        foreach ($ids as $id) {
+            $cached = $this->entityCache->getById($entityClass, $id);
+            if ($cached) {
+                $entitiesFromCache[$repository->getEntityId($cached)] = $cached;
+                unset($ids[array_search($id, $ids, true)]);
+            }
+        }
+
+        $onlineEntities = $repository->findByIds($ids);
+
+        foreach ($onlineEntities as $entity) {
+            $this->entityCache->cacheById($entityClass, $repository->getEntityId($entity), $entity);
+        }
+
+        // note: using array_replace instead of merge, because we want to keep the order of the ids
+        return array_replace($entitiesFromCache, $onlineEntities);
     }
 
     /**
